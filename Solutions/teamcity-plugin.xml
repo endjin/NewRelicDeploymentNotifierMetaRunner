@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:noNamespaceSchemaLocation="urn:shemas-jetbrains-com:teamcity-plugin-v1-xml">
+  <info>
+    <name>NewRelicDeploymentNotifierPlugin</name>
+    <display-name>NewRelic Deployment Notifier</display-name>
+    <version>snapshot</version>
+    <description>Notifies NewRelic that a new deployment has occurred.</description>
+    <vendor>
+      <name>Endjin Limited</name>
+      <url>http://endjin.com</url>
+    </vendor>
+  </info>
+  <deployment use-separate-classloader="false"/>
+</teamcity-plugin>
