@@ -16,7 +16,7 @@
     <build-runners>
       <runner name="" type="simpleRunner">
         <parameters>
-          <param name="script.content" value="curl.exe -H &quot;x-api-key:%teamcity.tool.newrelic.deploymentnotifier.apikey%&quot; -d &quot;deployment[app_name]=%teamcity.tool.newrelic.deploymentnotifier.appname%&quot; -d &quot;deployment[changelog]=%teamcity.tool.newrelic.deploymentnotifier.changelog%&quot; -d &quot;deployment[description]=%teamcity.tool.newrelic.deploymentnotifier.description%&quot; -d &quot;deployment[environment]=%teamcity.tool.newrelic.deploymentnotifier.environment%&quot; -d &quot;deployment[revision]=%teamcity.tool.newrelic.deploymentnotifier.revision%&quot; -d &quot;deployment[user]=%teamcity.tool.newrelic.deploymentnotifier.user%&quot; https://api.newrelic.com/deployments.xml" />
+          <param name="script.content" value="&quot;%teamcity.agent.tools.dir%\nr-deployment-notifier\bin\curl.exe&quot; -H &quot;x-api-key:%teamcity.tool.newrelic.deploymentnotifier.apikey%&quot; -d &quot;deployment[app_name]=%teamcity.tool.newrelic.deploymentnotifier.appname%&quot; -d &quot;deployment[changelog]=%teamcity.tool.newrelic.deploymentnotifier.changelog%&quot; -d &quot;deployment[description]=%teamcity.tool.newrelic.deploymentnotifier.description%&quot; -d &quot;deployment[environment]=%teamcity.tool.newrelic.deploymentnotifier.environment%&quot; -d &quot;deployment[revision]=%teamcity.tool.newrelic.deploymentnotifier.revision%&quot; -d &quot;deployment[user]=%teamcity.tool.newrelic.deploymentnotifier.user%&quot; https://api.newrelic.com/deployments.xml" />
           <param name="teamcity.step.mode" value="default" />
           <param name="use.custom.script" value="true" />
         </parameters>
