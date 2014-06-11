@@ -14,78 +14,11 @@
       <param name="teamcity.tool.newrelic.deploymentnotifier.user" value="" spec="text description='The name of the user/process that triggered this deployment' display='normal' label='User' validationMode=''" />
     </parameters>
     <build-runners>
-      <runner name="NewRelicDeploymentNotifier" type="jetbrains_powershell">
+      <runner name="" type="simpleRunner">
         <parameters>
-          <param name="jetbrains_powershell_execution" value="PS1" />
-          <param name="jetbrains_powershell_noprofile" value="true" />
-          <param name="jetbrains_powershell_errorToError" value="error" />
-          <param name="jetbrains_powershell_script_mode" value="CODE" />
-          <param name="jetbrains_powershell_bitness" value="x86" />
-          <param name="jetbrains_powershell_minVersion" value="3.0" />
+          <param name="script.content" value="&quot;%teamcity.agent.tools.dir%\nr-deployment-notifier\bin\curl.exe&quot; -silent -k -H &quot;x-api-key:%teamcity.tool.newrelic.deploymentnotifier.apikey%&quot; -d &quot;deployment[app_name]=%teamcity.tool.newrelic.deploymentnotifier.appname%&quot; -d &quot;deployment[changelog]=%teamcity.tool.newrelic.deploymentnotifier.changelog%&quot; -d &quot;deployment[description]=%teamcity.tool.newrelic.deploymentnotifier.description%&quot; -d &quot;deployment[environment]=%teamcity.tool.newrelic.deploymentnotifier.environment%&quot; -d &quot;deployment[revision]=%teamcity.tool.newrelic.deploymentnotifier.revision%&quot; -d &quot;deployment[user]=%teamcity.tool.newrelic.deploymentnotifier.user%&quot; https://api.newrelic.com/deployments.xml" />
           <param name="teamcity.step.mode" value="default" />
-          <param name="jetbrains_powershell_script_code">
-            <![CDATA[
-$toolPath = "`"%teamcity.agent.tools.dir%\nr-deployment-notifier\bin\curl.exe`"";
-$apiKey = "%teamcity.tool.newrelic.deploymentnotifier.apikey%";
-$appName = "%teamcity.tool.newrelic.deploymentnotifier.appname%";
-$changeLog = "%teamcity.tool.newrelic.deploymentnotifier.changelog%";
-$description = "%teamcity.tool.newrelic.deploymentnotifier.description%";
-$environment = "%teamcity.tool.newrelic.deploymentnotifier.environment%";
-$revision = "%teamcity.tool.newrelic.deploymentnotifier.revision%";
-$user = "%teamcity.tool.newrelic.deploymentnotifier.user%";
-$url = "https://api.newrelic.com/deployments.xml"
-
-try 
-{
-  $command = "";
-
-  if ([String]::IsNullOrEmpty($apiKey)){
-    throw "API Key is required"
-  } else {
-    $command += "-H `"x-api-key:$apiKey`" ";
-  }
-
-  if ([String]::IsNullOrEmpty($appName)){
-    throw "App Name is required"
-  } else {
-    $command += "-d `"deployment[app_name]=$appName`" ";
-  }
-
-  if (![String]::IsNullOrEmpty($changeLog)){
-    $command += "-d `"deployment[changelog]=$changeLog`" ";
-  }
-
-  if (![String]::IsNullOrEmpty($description)){
-    $command += "-d `"deployment[description]=$description`" ";
-  }
-
-  if (![String]::IsNullOrEmpty($environment)){
-    $command += "-d `"deployment[environment]=$environment`" ";
-  }
-
-  if (![String]::IsNullOrEmpty($revision)){
-    $command += "-d `"deployment[revision]=$revision`" ";
-  }
-
-  if (![String]::IsNullOrEmpty($user)){
-    $command += "-d `"deployment[user]=$user`"";
-  }
-
-  $commandToExecute = "& " + $toolPath + "-silent -k " + $command + " " + $url
-  
-  Write-Host "Command to Execute: " $commandToExecute
-
-  $result = Invoke-Expression $commandToExecute
-  
-  Write-Host $result
-} 
-catch 
-{
-  Write-Error $_
-  [System.Environment]::Exit(1)
-}
-            ]]>
-          </param>
+          <param name="use.custom.script" value="true" />
         </parameters>
       </runner>
     </build-runners>
