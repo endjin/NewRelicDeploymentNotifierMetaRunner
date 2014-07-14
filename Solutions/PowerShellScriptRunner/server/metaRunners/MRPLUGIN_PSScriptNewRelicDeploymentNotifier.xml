@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-runner name="NewRelic Deployment Notifier">
+  <description>Notify NewRelic that a new deployment has occurred</description>
+  <settings>
+    <parameters>
+      <!-- Mandatory Fields -->
+      <param name="teamcity.tool.newrelic.deploymentnotifier.apikey" value="" spec="text description='NewRelic API Key' display='normal' label='API Key' validationMode='not_empty'" />
+      <param name="teamcity.tool.newrelic.deploymentnotifier.appname" value="" spec="text description='The value of app_name in the newrelic configuration file used by the application. This may be different than the label that appears in the RPM UI. You can find the app_name value in RPM by looking at the label settings for your application.' display='normal' label='App Name' validationMode='not_empty'" />
+      <!-- Optional Fields -->
+      <param name="teamcity.tool.newrelic.deploymentnotifier.changelog" value="" spec="text description='A list of changes for this deployment' display='normal' label='Changelog' validationMode=''" />
+      <param name="teamcity.tool.newrelic.deploymentnotifier.description" value="" spec="text description=' Text annotation for the deployment; notes for you' display='normal' label='Description' validationMode=''" />
+      <param name="teamcity.tool.newrelic.deploymentnotifier.environment" value="" spec="text description='The environment for this deployment' display='normal' label='Environment' validationMode=''" />
+      <param name="teamcity.tool.newrelic.deploymentnotifier.revision" value="" spec="text description='A revision number (e.g. git commit SHA or build number)' display='normal' label='Revision' validationMode=''" />
+      <param name="teamcity.tool.newrelic.deploymentnotifier.user" value="" spec="text description='The name of the user/process that triggered this deployment' display='normal' label='User' validationMode=''" />
+    </parameters>
+    <build-runners>
+      <runner name="NewRelicDeploymentNotifier" type="jetbrains_powershell">
+        <parameters>
+          <param name="jetbrains_powershell_execution" value="PS1" />
+          <param name="jetbrains_powershell_noprofile" value="true" />
+          <param name="jetbrains_powershell_errorToError" value="error" />
+          <param name="jetbrains_powershell_script_mode" value="CODE" />
+          <param name="jetbrains_powershell_bitness" value="x86" />
+          <param name="jetbrains_powershell_minVersion" value="3.0" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="jetbrains_powershell_script_code">
+            <![CDATA[
+$apiKey = "%teamcity.tool.newrelic.deploymentnotifier.apikey%";
+$appName = "%teamcity.tool.newrelic.deploymentnotifier.appname%";
+$changeLog = "%teamcity.tool.newrelic.deploymentnotifier.changelog%";
+$description = "%teamcity.tool.newrelic.deploymentnotifier.description%";
+$environment = "%teamcity.tool.newrelic.deploymentnotifier.environment%";
+$revision = "%teamcity.tool.newrelic.deploymentnotifier.revision%";
+$user = "%teamcity.tool.newrelic.deploymentnotifier.user%";
+$url = "https://api.newrelic.com/deployments.xml"
+
+try 
+{
+  $body = "";
+
+  if ([String]::IsNullOrEmpty($apiKey)){
+    throw "API Key is required"
+  } else {
+    $headers += @{"x-api-key"=($apiKey)};
+  }
+
+  if ([String]::IsNullOrEmpty($appName)){
+    throw "App Name is required"
+  } else {
+    $body += "deployment[app_name]=$appName";
+  }
+
+  if (![String]::IsNullOrEmpty($changeLog)){
+    $body += "&deployment[changelog]=$changeLog";
+  }
+
+  if (![String]::IsNullOrEmpty($description)){
+    $body += "&deployment[description]=$description";
+  }
+
+  if (![String]::IsNullOrEmpty($environment)){
+    $body += "&deployment[environment]=$environment";
+  }
+
+  if (![String]::IsNullOrEmpty($revision)){
+    $body += "&deployment[revision]=$revision";
+  }
+
+  if (![String]::IsNullOrEmpty($user)){
+    $body += "&deployment[user]=$user";
+  }
+
+  $result = Invoke-RestMethod -Uri $url -Headers $headers -Body $body
+  
+  Write-Host $result
+} 
+catch 
+{
+  Write-Error $_
+  [System.Environment]::Exit(1)
+}
+            ]]>
+          </param>
+        </parameters>
+      </runner>
+    </build-runners>
+    <requirements />
+  </settings>
+</meta-runner>
