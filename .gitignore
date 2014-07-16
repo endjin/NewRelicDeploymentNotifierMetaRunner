@@ -20,3 +20,5 @@ _GeneratedProduct.wxi
 [Bb]in*/
 [Oo]bj/
 [Ss]ql/
+!Solutions/PowerShellRunner/agent/bin
+!Solutions/SimpleRunner/agent/bin
