@@ -16,7 +16,7 @@ subprojects {
     task buildAgentZip(type: Zip) {
         from 'agent'
         archiveName 'nr_deployment_notifier.zip'
-        include '*'
+        include '**/*'
         destinationDir file("$buildDir/intermediate")
     }
 
