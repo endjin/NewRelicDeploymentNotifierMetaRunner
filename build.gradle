@@ -1,0 +1,61 @@
+subprojects {
+    apply plugin: "maven-publish"
+
+    group = "com.endjin"
+    version = 1.0
+    ext.artifactBase = "newrelic-deployment-notifier"
+    ext.buildDir = "build"
+    ext.distsDir = "$buildDir/distributions"
+
+    // Override these values in ./gradle.properties
+    ext.mavenRepositoryUrl = project.hasProperty('mavenRepositoryUrl') ? project.property("mavenRepositoryUrl") : 
+                                                                        "$buildDir/publications"
+    ext.mavenUsername = project.hasProperty('mavenUsername') ? project.property('mavenUsername') : ""
+    ext.mavenPassword = project.hasProperty('mavenPassword') ? project.property('mavenPassword') : ""
+
+    task buildAgentZip(type: Zip) {
+        from 'agent'
+        archiveName 'nr_deployment_notifier.zip'
+        include '*'
+        destinationDir file("$buildDir/intermediate")
+    }
+
+    task buildPlugin(type: Zip, dependsOn: 'buildAgentZip') {
+        from ("${buildDir}/intermediate") {
+            include 'nr_deployment_notifier.zip'
+            into "agent"
+        }
+        from (".") {
+            include "server/**/*", "teamcity-plugin.xml"
+            into ""
+        }
+        archiveName "${artifactBase}-${project.name}-${project.version}.zip"
+        destinationDir file(distsDir)
+    }
+
+    task clean(type: Delete) {
+        delete 'build'
+    }
+
+    publishing {
+        repositories {
+            maven {
+                url mavenRepositoryUrl
+
+                credentials {
+                    username mavenUsername
+                    password mavenPassword
+                }
+            }
+        }
+
+        publications {
+            plugin(MavenPublication) {
+                artifactId "${artifactBase}-${project.name}"
+                artifact buildPlugin
+            }
+        }
+    }
+}
+
+task buildPlugin << { }
