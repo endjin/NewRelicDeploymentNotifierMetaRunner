@@ -4,6 +4,7 @@ subprojects {
     group = "com.endjin"
     version = 1.0
     ext.artifactBase = "newrelic-deployment-notifier"
+    ext.notifier_artifact = "nr-deployment-notifier.zip"
     ext.buildDir = "build"
     ext.distsDir = "$buildDir/distributions"
 
@@ -15,14 +16,14 @@ subprojects {
 
     task buildAgentZip(type: Zip) {
         from 'agent'
-        archiveName 'nr_deployment_notifier.zip'
+        archiveName notifier_artifact
         include '**/*'
         destinationDir file("$buildDir/intermediate")
     }
 
     task buildPlugin(type: Zip, dependsOn: 'buildAgentZip') {
         from ("${buildDir}/intermediate") {
-            include 'nr_deployment_notifier.zip'
+            include notifier_artifact
             into "agent"
         }
         from (".") {
