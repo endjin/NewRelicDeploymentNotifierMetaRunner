@@ -7,6 +7,8 @@ More details about this MetaRunner are in the following blog post:
 
 http://blog.jetbrains.com/teamcity/2014/06/a-step-by-step-guide-create-a-custom-teamcity-metarunner-to-notify-newrelic-that-a-new-deployment-has-occurred/
 
+## Prerequisites
+Make sure your TeamCity Windows agents have [OpenSSL](http://slproweb.com/products/Win32OpenSSL.html) installed.
 
 ## Building
 This project uses [gradlew](https://docs.gradle.org/current/userguide/gradle_wrapper.html) to build, meaning you do not need to install any tools to perform a build.
